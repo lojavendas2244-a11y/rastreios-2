@@ -3,108 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rastrear Encomenda</title>
+<title>Suas Encomendas</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter, sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 
 body{
-background:linear-gradient(180deg,#0f1d35,#091424);
+background:linear-gradient(135deg,#0f172a,#1e293b);
 color:#fff;
-padding:20px;
-}
-
-h1{
-text-align:center;
-margin-bottom:20px;
-color:#3b82f6;
+display:flex;
+justify-content:center;
 }
 
 .container{
-max-width:500px;
-margin:auto;
+width:100%;
+max-width:420px;
+padding:20px;
 }
 
-.cards{
+h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+.card-grid{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px;
-margin-bottom:20px;
-display:none;
+margin-bottom:15px;
 }
 
 .card{
-background:#1e293b;
+background:rgba(255,255,255,0.05);
 padding:15px;
-border-radius:10px;
+border-radius:12px;
 text-align:center;
 }
 
 input{
 width:100%;
-padding:15px;
+padding:12px;
 border-radius:10px;
 border:none;
 margin-bottom:10px;
-font-size:16px;
 }
 
-button{
+.rastrear{
 width:100%;
-padding:15px;
-border:none;
+padding:12px;
 border-radius:10px;
 background:#3b82f6;
 color:#fff;
-font-size:16px;
-cursor:pointer;
+font-weight:bold;
 }
 
-button:hover{
-background:#2563eb;
-}
-
-.resultado{
-margin-top:20px;
-background:#1e293b;
-padding:15px;
-border-radius:10px;
-display:none;
-}
-
-.barra{
+.progress{
 width:100%;
 height:10px;
-background:#1f2937;
+background:#1e293b;
 border-radius:10px;
-margin:10px 0;
 overflow:hidden;
-display:none;
+margin:15px 0;
 }
 
-.progresso{
-height:10px;
-width:60%;
+.bar{
+width:0%;
+height:100%;
 background:#f59e0b;
+transition:1s;
+}
+
+.status-box{
+background:rgba(255,255,255,0.05);
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+font-size:14px;
 }
 
 #map{
-height:300px;
-margin-top:15px;
-border-radius:10px;
+height:200px;
+border-radius:12px;
+margin-bottom:15px;
 display:none;
 }
 
+.history-item{
+background:rgba(255,255,255,0.05);
+padding:8px;
+border-radius:8px;
+margin-bottom:5px;
+font-size:13px;
+}
 </style>
 </head>
 
@@ -112,90 +105,124 @@ display:none;
 
 <div class="container">
 
-<h1>rastreiros-2</h1>
+<h2>📦 Rastrear Encomenda</h2>
 
-<h2 style="text-align:center;margin-bottom:20px;">📦 Rastrear Encomenda</h2>
-
-<div class="cards" id="cards">
-
-<div class="card">
-<div>Em rota</div>
-<strong>1</strong>
+<div class="card-grid">
+<div class="card">Em rota<br><b id="rota">0</b></div>
+<div class="card">Em trânsito<br><b id="transito">0</b></div>
+<div class="card">Entregues<br><b id="entregue">0</b></div>
+<div class="card">Total<br><b id="total">0</b></div>
 </div>
 
-<div class="card">
-<div>Em trânsito</div>
-<strong>1</strong>
+<input type="text" id="codigo" placeholder="Digite o código de rastreio">
+
+<button class="rastrear" onclick="rastrear()">Rastrear</button>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
 </div>
 
-<div class="card">
-<div>Entregues</div>
-<strong>0</strong>
-</div>
-
-<div class="card">
-<div>Total</div>
-<strong>2</strong>
-</div>
-
-</div>
-
-<input id="codigo" placeholder="Digite o código de rastreio">
-
-<button onclick="rastrear()">Rastrear</button>
-
-<div class="barra" id="barra">
-<div class="progresso"></div>
-</div>
-
-<div class="resultado" id="resultado">
-<p><strong>Código:</strong> BR123456789BR</p>
-<p><strong>Status:</strong> Objeto em trânsito (60%)</p>
-<p><strong>Local:</strong> Recife PE</p>
+<div class="status-box" id="status">
+Digite um código para rastrear.
 </div>
 
 <div id="map"></div>
 
+<h3>Histórico</h3>
+<div id="historico"></div>
+
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
+let map;
+
 function rastrear(){
 
-let codigo = document.getElementById("codigo").value
-let resultado = document.getElementById("resultado")
-let cards = document.getElementById("cards")
-let barra = document.getElementById("barra")
-let mapDiv = document.getElementById("map")
+const codigo=document.getElementById("codigo").value.trim();
 
-if(codigo == "BR123456789BR"){
+if(!codigo){
+alert("Digite um código");
+return;
+}
 
-resultado.style.display = "block"
-cards.style.display = "grid"
-barra.style.display = "block"
-mapDiv.style.display = "block"
+const status="Objeto em trânsito";
+const cidade="Recife PE";
 
-setTimeout(function(){
+/* CONTADORES */
+document.getElementById("rota").innerHTML="1";
+document.getElementById("transito").innerHTML="1";
+document.getElementById("entregue").innerHTML="0";
+document.getElementById("total").innerHTML="2";
 
-var map = L.map('map').setView([-8.05,-34.88], 13);
+document.getElementById("bar").style.width="60%";
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-maxZoom: 19
-}).addTo(map);
+document.getElementById("status").innerHTML=
+"📦 Código: "+codigo+"<br>"+
+"Status: "+status+" (60%)<br>"+
+"Local: "+cidade;
 
-L.marker([-8.05,-34.88]).addTo(map)
-.bindPopup("Objeto em trânsito - Recife PE")
-.openPopup();
+/* MOSTRAR MAPA */
+document.getElementById("map").style.display="block";
 
-},500)
-
-}else{
-
-alert("Código não encontrado")
+iniciarMapa(cidade);
+salvarHistorico(codigo);
 
 }
+
+async function iniciarMapa(cidade){
+
+if(map){map.remove();}
+
+try{
+
+const resposta=await fetch(
+"https://nominatim.openstreetmap.org/search?format=json&q="+encodeURIComponent(cidade)
+);
+
+const dados=await resposta.json();
+
+if(!dados.length){
+alert("Cidade não encontrada");
+return;
+}
+
+const lat=dados[0].lat;
+const lon=dados[0].lon;
+
+map=L.map('map').setView([lat,lon],13);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{maxZoom:19}
+).addTo(map);
+
+L.marker([lat,lon])
+.addTo(map)
+.bindPopup("🚚 Objeto em Recife PE")
+.openPopup();
+
+}catch(e){
+
+alert("Erro ao carregar mapa");
+
+}
+
+}
+
+function salvarHistorico(codigo){
+
+const historico=document.getElementById("historico");
+
+const item=document.createElement("div");
+
+item.className="history-item";
+
+item.innerHTML="Código rastreado: "+codigo;
+
+historico.prepend(item);
 
 }
 
