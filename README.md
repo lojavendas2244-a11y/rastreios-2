@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -14,13 +14,24 @@
 body{
 background:linear-gradient(135deg,#0f172a,#1e293b);
 color:#fff;
+display:flex;
+justify-content:center;
 }
 
-.container{padding:20px}
+.container{
+width:100%;
+max-width:420px;
+padding:20px;
+}
+
+h2{
+text-align:center;
+margin-bottom:15px;
+}
 
 .card-grid{
 display:grid;
-grid-template-columns:repeat(2,1fr);
+grid-template-columns:1fr 1fr;
 gap:10px;
 margin-bottom:15px;
 }
@@ -28,7 +39,7 @@ margin-bottom:15px;
 .card{
 background:rgba(255,255,255,0.05);
 padding:15px;
-border-radius:15px;
+border-radius:12px;
 text-align:center;
 }
 
@@ -51,7 +62,7 @@ font-weight:bold;
 
 .progress{
 width:100%;
-height:12px;
+height:10px;
 background:#1e293b;
 border-radius:10px;
 overflow:hidden;
@@ -67,15 +78,17 @@ transition:1s;
 
 .status-box{
 background:rgba(255,255,255,0.05);
-padding:15px;
-border-radius:12px;
+padding:12px;
+border-radius:10px;
 margin-bottom:15px;
+font-size:14px;
 }
 
 #map{
-height:250px;
-border-radius:15px;
+height:200px;
+border-radius:12px;
 margin-bottom:15px;
+display:none;
 }
 
 .history-item{
@@ -150,6 +163,9 @@ document.getElementById("status").innerHTML=
 "📦 Código: "+codigo+"<br>"+
 "Status: "+status+" (60%)<br>"+
 "Local: "+cidade;
+
+/* MOSTRAR MAPA */
+document.getElementById("map").style.display="block";
 
 iniciarMapa(cidade);
 salvarHistorico(codigo);
