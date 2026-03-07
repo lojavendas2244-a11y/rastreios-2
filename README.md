@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -6,10 +5,9 @@
 <title>Suas Encomendas</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
 
 body{
@@ -84,7 +82,6 @@ padding:12px;
 border-radius:10px;
 margin-bottom:15px;
 font-size:14px;
-display:none;
 }
 
 #map{
@@ -94,6 +91,13 @@ margin-bottom:15px;
 display:none;
 }
 
+.history-item{
+background:rgba(255,255,255,0.05);
+padding:8px;
+border-radius:8px;
+margin-bottom:5px;
+font-size:13px;
+}
 </style>
 </head>
 
@@ -118,13 +122,18 @@ display:none;
 <div class="bar" id="bar"></div>
 </div>
 
-<div class="status-box" id="status"></div>
+<div class="status-box" id="status">
+Digite um código para rastrear.
+</div>
 
 <div id="map"></div>
 
+<h3>Histórico</h3>
+<div id="historico"></div>
+
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
@@ -132,52 +141,86 @@ let map;
 
 function rastrear(){
 
-let codigo = document.getElementById("codigo").value.trim()
+const codigo=document.getElementById("codigo").value.trim();
 
-if(codigo === "BR123456789BR"){
+if(!codigo){
+alert("Digite um código");
+return;
+}
 
-document.getElementById("rota").innerText="1"
-document.getElementById("transito").innerText="1"
-document.getElementById("entregue").innerText="0"
-document.getElementById("total").innerText="2"
+const status="Objeto em trânsito";
+const cidade="Recife PE";
 
-document.getElementById("bar").style.width="60%"
+document.getElementById("rota").innerHTML="1";
+document.getElementById("transito").innerHTML="1";
+document.getElementById("entregue").innerHTML="0";
+document.getElementById("total").innerHTML="2";
 
-let status=document.getElementById("status")
-status.style.display="block"
+document.getElementById("bar").style.width="60%";
 
-status.innerHTML=
+document.getElementById("status").innerHTML=
 "📦 Código: "+codigo+"<br>"+
-"Status: Objeto em trânsito (60%)<br>"+
-"Local: Recife PE<br>"+
-"Data: 06/03/2026"
+"Status: "+status+" (60%)<br>"+
+"Local: "+cidade;
 
-let mapDiv=document.getElementById("map")
-mapDiv.style.display="block"
+document.getElementById("map").style.display="block";
 
-setTimeout(function(){
-
-if(map){
-map.remove()
-}
-
-map = L.map('map').setView([-8.0476,-34.8770],13)
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-maxZoom:19
-}).addTo(map)
-
-L.marker([-8.0476,-34.8770]).addTo(map)
-.bindPopup("<b>🚚 Objeto em trânsito</b><br>Recife PE<br>2026",{maxWidth:150})
-.openPopup()
-
-},300)
-
-}else{
-
-alert("Código não encontrado")
+iniciarMapa(cidade);
+salvarHistorico(codigo);
 
 }
+
+async function iniciarMapa(cidade){
+
+if(map){map.remove();}
+
+try{
+
+const resposta=await fetch(
+"https://nominatim.openstreetmap.org/search?format=json&q="+encodeURIComponent(cidade)
+);
+
+const dados=await resposta.json();
+
+if(!dados.length){
+alert("Cidade não encontrada");
+return;
+}
+
+const lat=dados[0].lat;
+const lon=dados[0].lon;
+
+map=L.map('map').setView([lat,lon],13);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{maxZoom:19}
+).addTo(map);
+
+L.marker([lat,lon])
+.addTo(map)
+.bindPopup("🚚 Objeto em Recife PE")
+.openPopup();
+
+}catch(e){
+
+alert("Erro ao carregar mapa");
+
+}
+
+}
+
+function salvarHistorico(codigo){
+
+const historico=document.getElementById("historico");
+
+const item=document.createElement("div");
+
+item.className="history-item";
+
+item.innerHTML="Código rastreado: "+codigo;
+
+historico.prepend(item);
 
 }
 
