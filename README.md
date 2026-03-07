@@ -3,56 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rastreamento</title>
+<title>Suas Encomendas</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
 <style>
 
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+
 body{
-font-family:Arial;
-background:#0f172a;
-color:white;
+background:linear-gradient(135deg,#0f172a,#1e293b);
+color:#fff;
 display:flex;
 justify-content:center;
 }
 
 .container{
-width:400px;
+width:100%;
+max-width:420px;
 padding:20px;
+}
+
+h2{
+text-align:center;
+margin-bottom:15px;
+}
+
+.card-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-bottom:15px;
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+padding:15px;
+border-radius:12px;
+text-align:center;
 }
 
 input{
 width:100%;
-padding:10px;
+padding:12px;
+border-radius:10px;
+border:none;
 margin-bottom:10px;
-border-radius:8px;
+}
+
+.rastrear{
+width:100%;
+padding:12px;
+border-radius:10px;
+background:#3b82f6;
+color:#fff;
+font-weight:bold;
 border:none;
 }
 
-button{
+.progress{
 width:100%;
-padding:10px;
-background:#3b82f6;
-border:none;
-color:white;
-border-radius:8px;
-font-weight:bold;
+height:10px;
+background:#1e293b;
+border-radius:10px;
+overflow:hidden;
+margin:15px 0;
+}
+
+.bar{
+width:0%;
+height:100%;
+background:#f59e0b;
+transition:1s;
+}
+
+.status-box{
+background:rgba(255,255,255,0.05);
+padding:12px;
+border-radius:10px;
+margin-bottom:15px;
+font-size:14px;
+display:none;
 }
 
 #map{
-height:220px;
-margin-top:15px;
-border-radius:10px;
+height:200px;
+border-radius:12px;
+margin-bottom:15px;
 display:none;
-}
-
-.status{
-margin-top:10px;
-display:none;
-background:#1e293b;
-padding:10px;
-border-radius:8px;
 }
 
 </style>
@@ -64,11 +103,22 @@ border-radius:8px;
 
 <h2>📦 Rastrear Encomenda</h2>
 
-<input id="codigo" placeholder="Digite o código">
+<div class="card-grid">
+<div class="card">Em rota<br><b id="rota">0</b></div>
+<div class="card">Em trânsito<br><b id="transito">0</b></div>
+<div class="card">Entregues<br><b id="entregue">0</b></div>
+<div class="card">Total<br><b id="total">0</b></div>
+</div>
 
-<button onclick="rastrear()">Rastrear</button>
+<input type="text" id="codigo" placeholder="Digite o código de rastreio">
 
-<div class="status" id="status"></div>
+<button class="rastrear" onclick="rastrear()">Rastrear</button>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+<div class="status-box" id="status"></div>
 
 <div id="map"></div>
 
@@ -82,39 +132,43 @@ let map;
 
 function rastrear(){
 
-let codigo=document.getElementById("codigo").value
+let codigo = document.getElementById("codigo").value.trim()
 
-if(codigo==="BR123456789BR"){
+if(codigo === "BR123456789BR"){
+
+document.getElementById("rota").innerText="1"
+document.getElementById("transito").innerText="1"
+document.getElementById("entregue").innerText="0"
+document.getElementById("total").innerText="2"
+
+document.getElementById("bar").style.width="60%"
 
 let status=document.getElementById("status")
 status.style.display="block"
-status.innerHTML="📦 Status: Em trânsito<br>📍 Recife PE<br>📅 2026"
+
+status.innerHTML=
+"📦 Código: "+codigo+"<br>"+
+"Status: Objeto em trânsito (60%)<br>"+
+"Local: Recife PE<br>"+
+"Data: 06/03/2026"
 
 let mapDiv=document.getElementById("map")
 mapDiv.style.display="block"
 
-setTimeout(()=>{
+setTimeout(function(){
 
 if(map){
 map.remove()
 }
 
-map=L.map("map").setView([-8.0476,-34.8770],13)
+map = L.map('map').setView([-8.0476,-34.8770],13)
 
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 maxZoom:19
 }).addTo(map)
 
-const icon=L.icon({
-iconUrl:"https://cdn-icons-png.flaticon.com/512/684/684908.png",
-iconSize:[35,35],
-iconAnchor:[17,35],
-popupAnchor:[0,-30]
-})
-
-L.marker([-8.0476,-34.8770],{icon:icon})
-.addTo(map)
-.bindPopup("🚚 Encomenda em trânsito<br>Recife PE<br>2026")
+L.marker([-8.0476,-34.8770]).addTo(map)
+.bindPopup("<b>🚚 Objeto em trânsito</b><br>Recife PE<br>2026",{maxWidth:150})
 .openPopup()
 
 },300)
