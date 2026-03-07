@@ -149,7 +149,7 @@ return;
 }
 
 const status="Objeto em trânsito";
-const cidade="Recife PE";
+const cidade="Carpina PE";
 
 document.getElementById("rota").innerHTML="1";
 document.getElementById("transito").innerHTML="1";
