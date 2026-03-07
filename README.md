@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -58,6 +57,7 @@ border-radius:10px;
 background:#3b82f6;
 color:#fff;
 font-weight:bold;
+border:none;
 }
 
 .progress{
@@ -151,7 +151,6 @@ return;
 const status="Objeto em trânsito";
 const cidade="Recife PE";
 
-/* CONTADORES */
 document.getElementById("rota").innerHTML="1";
 document.getElementById("transito").innerHTML="1";
 document.getElementById("entregue").innerHTML="0";
@@ -164,7 +163,6 @@ document.getElementById("status").innerHTML=
 "Status: "+status+" (60%)<br>"+
 "Local: "+cidade;
 
-/* MOSTRAR MAPA */
 document.getElementById("map").style.display="block";
 
 iniciarMapa(cidade);
