@@ -7,23 +7,15 @@
 
 <title>Rastrear Encomenda</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-}
-
 body{
-background:radial-gradient(circle at top,#0b2a55,#020617);
+margin:0;
+font-family:Arial;
+background:#0b1d3a;
 color:white;
 display:flex;
 justify-content:center;
-min-height:100vh;
 }
 
 .container{
@@ -32,111 +24,83 @@ max-width:420px;
 padding:20px;
 }
 
-.header{
+h1{
 text-align:center;
-font-size:22px;
-font-weight:700;
 margin-bottom:20px;
 }
 
 .cards{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:12px;
-margin-bottom:15px;
+gap:10px;
 }
 
 .card{
-background:linear-gradient(145deg,#0f172a,#020617);
-border-radius:16px;
+background:#111c3a;
 padding:15px;
+border-radius:10px;
 text-align:center;
-box-shadow:0 10px 25px rgba(0,0,0,0.6);
-}
-
-.card span{
-display:block;
-font-size:13px;
-opacity:.8;
 }
 
 .card b{
 font-size:22px;
 }
 
-.input-box{
-background:#0f172a;
-border-radius:14px;
-display:flex;
-align-items:center;
-padding:10px;
-margin-bottom:10px;
-}
-
-.input-box input{
-flex:1;
-background:none;
+input{
+width:100%;
+padding:12px;
+margin-top:15px;
+border-radius:10px;
 border:none;
-color:white;
-font-size:14px;
-outline:none;
 }
 
-.button{
+button{
 width:100%;
 padding:14px;
-border-radius:14px;
+margin-top:10px;
 border:none;
-background:linear-gradient(90deg,#1d4ed8,#2563eb);
+border-radius:10px;
+background:#1d4ed8;
 color:white;
-font-weight:700;
 font-size:16px;
-cursor:pointer;
-margin-bottom:15px;
+font-weight:bold;
 }
 
 .progress{
-height:12px;
-background:#020617;
+width:100%;
+height:10px;
+background:#000;
 border-radius:20px;
-overflow:hidden;
-margin-bottom:15px;
+margin-top:15px;
 }
 
 .bar{
 height:100%;
 width:0%;
-background:linear-gradient(90deg,#facc15,#f59e0b);
-transition:1s;
+background:orange;
+border-radius:20px;
 }
 
 .status{
-background:linear-gradient(145deg,#0f172a,#020617);
+margin-top:15px;
+background:#111c3a;
 padding:15px;
-border-radius:16px;
-margin-bottom:15px;
+border-radius:10px;
 }
 
 .map{
-height:160px;
-border-radius:16px;
-background:url("https://i.imgur.com/6YV6G8k.jpg") center/cover;
-margin-bottom:15px;
+margin-top:15px;
+height:150px;
+border-radius:10px;
+background:url("https://maps.gstatic.com/tactile/basepage/pegman_sherlock.png") center no-repeat;
+background-color:#1e293b;
 }
 
 .history{
-background:linear-gradient(145deg,#0f172a,#020617);
-border-radius:16px;
+margin-top:15px;
+background:#111c3a;
 padding:15px;
-font-size:14px;
-opacity:.8;
-}
-
-.footer{
-text-align:center;
-margin-top:20px;
-opacity:.7;
-font-size:13px;
+border-radius:10px;
 }
 
 </style>
@@ -146,56 +110,31 @@ font-size:13px;
 
 <div class="container">
 
-<div class="header">
-📦 RASTREAR ENCOMENDA
-</div>
+<h1>📦 Rastrear Encomenda</h1>
 
 <div class="cards">
-
-<div class="card">
-<span>Em rota</span>
-<b id="rota">0</b>
+<div class="card">Em rota<br><b id="rota">0</b></div>
+<div class="card">Em trânsito<br><b id="transito">0</b></div>
+<div class="card">Entregues<br><b id="entregue">0</b></div>
+<div class="card">Total<br><b id="total">0</b></div>
 </div>
 
-<div class="card">
-<span>Em trânsito</span>
-<b id="transito">0</b>
-</div>
+<input type="text" id="codigo" placeholder="Digite o código">
 
-<div class="card">
-<span>Entregues</span>
-<b id="entregue">0</b>
-</div>
-
-<div class="card">
-<span>Total</span>
-<b id="total">0</b>
-</div>
-
-</div>
-
-<div class="input-box">
-<input type="text" id="codigo" placeholder="Digite o código de rastreio">
-</div>
-
-<button class="button" onclick="rastrear()">RASTREAR</button>
+<button onclick="rastrear()">RASTREAR</button>
 
 <div class="progress">
 <div class="bar" id="bar"></div>
 </div>
 
 <div class="status" id="status">
-Digite um código de rastreio para consultar.
+Digite um código para rastrear.
 </div>
 
 <div class="map"></div>
 
-<div class="history">
-Nenhum código rastreado ainda.
-</div>
-
-<div class="footer">
-🇧🇷 Segurança Garantida
+<div class="history" id="historico">
+Nenhum rastreio ainda.
 </div>
 
 </div>
@@ -204,17 +143,17 @@ Nenhum código rastreado ainda.
 
 function rastrear(){
 
-const codigo=document.getElementById("codigo").value;
+let codigo=document.getElementById("codigo").value;
 
-if(!codigo){
-alert("Digite um código");
+if(codigo==""){
+alert("Digite o código");
 return;
 }
 
-document.getElementById("rota").innerHTML="1";
-document.getElementById("transito").innerHTML="1";
-document.getElementById("entregue").innerHTML="0";
-document.getElementById("total").innerHTML="2";
+document.getElementById("rota").innerText="1";
+document.getElementById("transito").innerText="1";
+document.getElementById("entregue").innerText="0";
+document.getElementById("total").innerText="2";
 
 document.getElementById("bar").style.width="60%";
 
@@ -222,6 +161,9 @@ document.getElementById("status").innerHTML=
 "📦 Código: "+codigo+
 "<br>Status: Objeto em trânsito"+
 "<br>Local: Recife / PE";
+
+document.getElementById("historico").innerHTML=
+"Código rastreado: "+codigo;
 
 }
 
