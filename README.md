@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
@@ -118,8 +118,7 @@ display:none;
 <div class="bar" id="bar"></div>
 </div>
 
-<div class="status-box" id="status">
-</div>
+<div class="status-box" id="status"></div>
 
 <div id="map"></div>
 
@@ -128,6 +127,8 @@ display:none;
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
+
+let map;
 
 function rastrear(){
 
@@ -142,7 +143,7 @@ document.getElementById("total").innerText="2"
 
 document.getElementById("bar").style.width="60%"
 
-let status = document.getElementById("status")
+let status=document.getElementById("status")
 status.style.display="block"
 
 status.innerHTML=
@@ -156,14 +157,18 @@ mapDiv.style.display="block"
 
 setTimeout(function(){
 
-var map = L.map('map').setView([-8.0476,-34.8770],13)
+if(map){
+map.remove()
+}
+
+map = L.map('map').setView([-8.0476,-34.8770],13)
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 maxZoom:19
 }).addTo(map)
 
 L.marker([-8.0476,-34.8770]).addTo(map)
-.bindPopup("🚚 Objeto em Recife PE - 2026")
+.bindPopup("<b>🚚 Objeto em trânsito</b><br>Recife PE<br>2026",{maxWidth:150})
 .openPopup()
 
 },300)
