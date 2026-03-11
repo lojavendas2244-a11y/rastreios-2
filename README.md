@@ -234,7 +234,7 @@ SISTEMA ATIVO
 
 <div class="step">
 <p>Objeto em rota</p>
-<span>Local: Ferreiros - PE • Data: 11/03/2026</span>
+<span>Local: Itabaiana - PB • Data: 11/03/2026</span>
 </div>
 
 </div>
@@ -260,7 +260,7 @@ document.getElementById("error").style.display="none"
 
 document.getElementById("res-id").innerText=code
 document.getElementById("res-status").innerText="Objeto em rota"
-document.getElementById("res-local").innerText="Ferreiros - PE"
+document.getElementById("res-local").innerText="Itabaiana - PB"
 
 setTimeout(initMap,200)
 
@@ -279,14 +279,14 @@ if(map){
 map.remove()
 }
 
-map=L.map('map').setView([-7.4461,-35.2353],11)
+map=L.map('map').setView([-7.3319,-35.3317],11)
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 maxZoom:19
 }).addTo(map)
 
-L.marker([-7.4461,-35.2353]).addTo(map)
-.bindPopup("Objeto em Ferreiros - PE")
+L.marker([-7.3319,-35.3317]).addTo(map)
+.bindPopup("Objeto em Itabaiana - PB")
 .openPopup()
 
 }
