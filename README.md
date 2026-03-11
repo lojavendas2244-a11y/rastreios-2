@@ -6,7 +6,6 @@
 <title>CekPack PRO | Rastreamento</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
@@ -234,8 +233,8 @@ SISTEMA ATIVO
 <div id="map"></div>
 
 <div class="step">
-<p>Objeto recebido pelos Correios do Brasil</p>
-<span>Local: Timbaúba - PE • Data: 10/03/2026</span>
+<p>Objeto em rota</p>
+<span>Local: Ferreiros - PE • Data: 11/03/2026</span>
 </div>
 
 </div>
@@ -248,6 +247,8 @@ SISTEMA ATIVO
 
 <script>
 
+let map
+
 function buscar(){
 
 let code=document.getElementById("trackInput").value.trim()
@@ -258,8 +259,8 @@ document.getElementById("results").style.display="block"
 document.getElementById("error").style.display="none"
 
 document.getElementById("res-id").innerText=code
-document.getElementById("res-status").innerText="Objeto recebido pelos Correios do Brasil"
-document.getElementById("res-local").innerText="Timbaúba - PE"
+document.getElementById("res-status").innerText="Objeto em rota"
+document.getElementById("res-local").innerText="Ferreiros - PE"
 
 setTimeout(initMap,200)
 
@@ -274,14 +275,18 @@ document.getElementById("error").style.display="block"
 
 function initMap(){
 
-var map=L.map('map').setView([-7.5075,-35.3161],11)
+if(map){
+map.remove()
+}
+
+map=L.map('map').setView([-7.4461,-35.2353],11)
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 maxZoom:19
 }).addTo(map)
 
-L.marker([-7.5075,-35.3161]).addTo(map)
-.bindPopup("Objeto em Timbaúba - PE")
+L.marker([-7.4461,-35.2353]).addTo(map)
+.bindPopup("Objeto em Ferreiros - PE")
 .openPopup()
 
 }
