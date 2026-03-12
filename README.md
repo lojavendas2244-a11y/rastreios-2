@@ -234,7 +234,7 @@ SISTEMA ATIVO
 
 <div class="step">
 <p>Objeto em rota</p>
-<span>Local: Itabaiana - PB • Data: 11/03/2026</span>
+<span>Local: Juarez Távora - PB • Data: 13/03/2026</span>
 </div>
 
 </div>
@@ -260,7 +260,7 @@ document.getElementById("error").style.display="none"
 
 document.getElementById("res-id").innerText=code
 document.getElementById("res-status").innerText="Objeto em rota"
-document.getElementById("res-local").innerText="Itabaiana - PB"
+document.getElementById("res-local").innerText="Juarez Távora - PB"
 
 setTimeout(initMap,200)
 
@@ -279,14 +279,14 @@ if(map){
 map.remove()
 }
 
-map=L.map('map').setView([-7.3319,-35.3317],11)
+map=L.map('map').setView([-7.1646,-35.5902],11)
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 maxZoom:19
 }).addTo(map)
 
-L.marker([-7.3319,-35.3317]).addTo(map)
-.bindPopup("Objeto em Itabaiana - PB")
+L.marker([-7.1646,-35.5902]).addTo(map)
+.bindPopup("Objeto em Juarez Távora - PB")
 .openPopup()
 
 }
