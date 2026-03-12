@@ -234,7 +234,7 @@ SISTEMA ATIVO
 
 <div class="step">
 <p>Objeto em rota</p>
-<span>Local: Juarez Távora - PB • Data: 13/03/2026</span>
+<span>Local: Juarez Távora - PB • Data: 12/03/2026</span>
 </div>
 
 </div>
