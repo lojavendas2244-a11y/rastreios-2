@@ -234,7 +234,7 @@ SISTEMA ATIVO
 
 <div class="step">
 <p>Objeto em rota</p>
-<span>Local: Juarez Távora - PB • Data: 12/03/2026</span>
+<span>Local: Areia - PB • Data: 14/03/2026</span>
 </div>
 
 </div>
@@ -260,7 +260,7 @@ document.getElementById("error").style.display="none"
 
 document.getElementById("res-id").innerText=code
 document.getElementById("res-status").innerText="Objeto em rota"
-document.getElementById("res-local").innerText="Juarez Távora - PB"
+document.getElementById("res-local").innerText="Areia - PB"
 
 setTimeout(initMap,200)
 
@@ -279,14 +279,14 @@ if(map){
 map.remove()
 }
 
-map=L.map('map').setView([-7.1646,-35.5902],11)
+map=L.map('map').setView([-6.9649,-35.6977],11)
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
 maxZoom:19
 }).addTo(map)
 
-L.marker([-7.1646,-35.5902]).addTo(map)
-.bindPopup("Objeto em Juarez Távora - PB")
+L.marker([-6.9649,-35.6977]).addTo(map)
+.bindPopup("Objeto em Areia - PB")
 .openPopup()
 
 }
